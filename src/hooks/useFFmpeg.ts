@@ -6,17 +6,20 @@ export const useFFmpeg = () => {
     const [loaded, setLoaded] = useState(false);
     const [progress, setProgress] = useState(0);
     const [isProcessing, setIsProcessing] = useState(false);
-    const ffmpegRef = useRef(new FFmpeg());
+    const ffmpegRef = useRef<any>(null);
 
     const load = async () => {
         const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+        if (!ffmpegRef.current) {
+            ffmpegRef.current = new FFmpeg();
+        }
         const ffmpeg = ffmpegRef.current;
 
-        ffmpeg.on('log', ({ message }) => {
+        ffmpeg.on('log', ({ message }: { message: string }) => {
             console.log(message);
         });
 
-        ffmpeg.on('progress', ({ progress }) => {
+        ffmpeg.on('progress', ({ progress }: { progress: number }) => {
             setProgress(Math.round(progress * 100));
         });
 
